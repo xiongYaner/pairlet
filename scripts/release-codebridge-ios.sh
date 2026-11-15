@@ -10,8 +10,13 @@ BUILD_NUMBER="${BUILD_NUMBER:?set BUILD_NUMBER after checking App Store Connect}
 OUTPUT="${OUTPUT:-$PWD/_local/releases/codebridge-compose-$VERSION-$BUILD_NUMBER}"
 mkdir -p "$OUTPUT"
 xcodegen generate --spec iosApp/codebridge-compose.yml
+# Reuse the reviewed upstream package pins; a new generated project must not resolve newer SDKs.
+PIN_DIR=iosApp/CodeBridgeCompose.xcodeproj/project.xcworkspace/xcshareddata/swiftpm
+mkdir -p "$PIN_DIR"
+cp iosApp/iosApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved "$PIN_DIR/Package.resolved"
 xcodebuild -project iosApp/CodeBridgeCompose.xcodeproj -scheme CodeBridge \
   -configuration Release -destination 'generic/platform=iOS' \
+  -onlyUsePackageVersionsFromResolvedFile -disableAutomaticPackageResolution \
   -archivePath "$OUTPUT/CodeBridge.xcarchive" \
   MARKETING_VERSION="$VERSION" CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
   archive >"$OUTPUT/archive.log" 2>&1 || { tail -n 65 "$OUTPUT/archive.log"; exit 1; }

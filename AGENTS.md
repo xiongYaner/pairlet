@@ -4,6 +4,13 @@
 
 手机 App 通过零知识 E2E relay 驱动本机 AI 编程 Agent（Claude Code、Codex 等）的伴侣工具。组成：`mobile/`（Compose Multiplatform App）、`daemon/`（本机 Kotlin/JVM 守护进程）、`relay/`（云端 Ktor 中转，2026-10-27 起核心在国内 ECS，地址变量 `RELAY_HOST_CN`，正式域名 `relay.pairlet.cn`；香港旧域经 SSH 反代至国内，禁止重启香港旧核心；`RELAY_HOST` 是 2026-07-08 已停用的旧机器，别连）、`protocol/`（共享 wire 协议）。
 
+## 本 Fork 的个人发行入口
+
+- 本仓库 `xiongYaner/pairlet` 在 `main` 开发，个人 relay 为 `wss://relay.xiaowanai.cn`。上段和后文的 `relay.pairlet.cn`／香港迁移信息属于上游运维背景，不能据此部署到上游服务器。
+- 个人 iOS 使用 `iosApp/codebridge-compose.yml`、`scripts/release-codebridge-ios.sh`，身份 `com.gejiarong.codebridge` / Team `7U83DS2M3Q`。不能误用上游 `iosApp/project.yml` 或默认 `ios-release.yml` 上传个人版本。详见 [CodeBridge 发行与连接](docs/CODEBRIDGE-RELEASE.md)。
+- 个人云端使用 Nginx，部署入口为 `scripts/deploy-codebridge-relay.sh`；保留既有数据库、凭据和其他业务服务。不能直接运行固定上游 Caddy 配置的 `scripts/redeploy-relay.sh`。详见[个人 relay 运维](docs/deploy/CODEBRIDGE-RELAY.md)。
+- 两份尚未提交的 SwiftUI 工作区 `codex/app-foundation`、`codex/swiftui-delivery` 按用户决定保持原样，不混入 main Compose 发行。
+
 ## 沟通语言
 
 - 面向用户的输出（回复、汇报、提问、计划说明、commit/PR 描述里的说明性文字）一律用中文；代码、标识符、命令、日志和引用的原文保持原样。
