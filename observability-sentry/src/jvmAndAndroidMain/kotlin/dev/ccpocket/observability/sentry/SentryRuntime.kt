@@ -67,7 +67,6 @@ object SentryRuntime {
         counters?.let { current -> counterWorker.execute { current.flush() } }
     }
     @Synchronized fun flush() { sink?.flush(); counters?.flush() }
-    fun counterSnapshot(): DiagnosticCounterSnapshot? = counters?.snapshot()
 
     fun configuredDsn(component: Component): String? {
         val key = component.name.lowercase()

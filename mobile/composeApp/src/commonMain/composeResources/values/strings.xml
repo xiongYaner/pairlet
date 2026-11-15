@@ -3,8 +3,6 @@
     <!-- ── connect / pairing ─────────────────────────────────────── -->
     <string name="connect">Connect</string>
     <string name="paste_pair_link">paste ccpocket://pair link</string>
-    <string name="pairing_title">Connect your computer</string>
-    <string name="pairing_subtitle">Pair this phone with the Pairlet daemon on your computer.</string>
     <string name="scanning">scanning…</string>
     <string name="run_code_prefix">Run</string>
     <string name="run_code_suffix">to get a code.</string>
@@ -25,15 +23,12 @@
     <string name="status_pair_failed">pairing failed: %1$s</string>
     <string name="status_connecting">connecting…</string>
     <string name="status_reconnecting">reconnecting…</string>
-    <string name="status_connected">connected</string>
     <string name="status_conn_lost">connection lost — retrying…</string>
     <string name="status_failed">failed: %1$s</string>
 
     <!-- ── connection-state UX (full-screen states + empty) ──────── -->
     <string name="conn_retry">Try again</string>
     <string name="conn_repair">Pair again</string>
-    <string name="conn_computer_offline_title">Your computer is offline</string>
-    <string name="conn_computer_offline_body">Pairlet can\'t see your computer. Make sure it\'s awake and the Pairlet app is running.</string>
     <string name="conn_computer_offline_hint">We\'ll reconnect automatically as soon as it\'s back.</string>
     <string name="conn_computer_offline_banner">Computer offline — waiting for it to come back…</string>
     <string name="conn_connecting_banner">Connecting to your computer…</string>
@@ -122,13 +117,11 @@
     <string name="time_hours_ago">%1$dh ago</string>
     <string name="time_yesterday">yesterday</string>
     <string name="time_days_ago">%1$dd ago</string>
-    <string name="start_agent_in">Start %1$s in %2$s</string>
 
     <!-- ── chat ──────────────────────────────────────────────────── -->
     <string name="chat_title">Chat</string>
     <string name="stop">Stop</string>
     <string name="thinking_streaming">Thinking…</string>
-    <string name="chat_running">running</string>
     <string name="message_queued_hint">Working… — sends will queue</string>
     <string name="thought_for">Thought for %1$ds</string>
     <string name="code_copy">copy</string>
@@ -147,7 +140,6 @@
     <string name="send">Send</string>
     <string name="dictate">Dictate</string>
     <string name="retry_voice_input">Retry voice input</string>
-    <string name="attach_image">Attach image</string>
     <string name="attach_menu">Attach</string>
     <string name="attach_sheet_photo">Photo</string>
     <string name="attach_sheet_file">File</string>
@@ -195,29 +187,21 @@
     <string name="cancel">Cancel</string>
     <string name="bypass_cta">⚠ Enable full auto</string>
     <string name="new_session_title">New session</string>
-    <string name="note_change_anytime">You can change this anytime from the badge.</string>
     <string name="rules_remembered_header">REMEMBERED THIS SESSION</string>
     <string name="clear_all">Clear all</string>
 
     <!-- ── permission sheet ──────────────────────────────────────── -->
-    <string name="auto_deny">auto-deny</string>
-    <string name="ask_waiting_manual">waiting for you</string>
     <string name="auto_denied_title">Auto-denied</string>
     <string name="auto_denied_body">No response within the time limit.</string>
     <string name="dismiss">Dismiss</string>
-    <string name="needs_permission">Claude needs permission</string>
     <string name="permission_fallback">Permission</string>
     <string name="deny">Deny</string>
     <string name="allow_once">Allow once</string>
     <string name="always_allow">Always allow</string>
-    <string name="always_allow_danger">“Always allow” would let Claude %1$s all session — not recommended.</string>
-    <string name="act_freely">act freely</string>
-    <string name="always_allow_scope">“Always allow” remembers only %1$s for this session.</string>
     <string name="allow_chip_prefix">Always allowing</string>
     <string name="allow_chip_suffix">this session</string>
     <!-- approval design M2: task-scope actions, retry-safer, autorun chip, risk badge -->
     <string name="allow_for_task">Allow for task</string>
-    <string name="allow_for_task_note">Covers matching actions until this task ends (2 h max).</string>
     <string name="retry_safer">Safer way</string>
     <string name="retry_safer_title">Ask for a safer approach</string>
     <string name="retry_safer_send">Send constraints</string>
@@ -227,7 +211,6 @@
     <string name="rs_stay_workspace">Stay inside the project folder</string>
     <string name="rs_patch_only">Produce a patch to review, don\'t apply it</string>
     <string name="rs_custom_hint">Other constraint…</string>
-    <string name="more_options">More</string>
     <string name="allow_session_option">Always allow this session</string>
     <string name="autorun_label">Auto-ran</string>
     <string name="autorun_basis_task">task grant</string>
@@ -334,7 +317,6 @@
     <string name="updates_unknown">unknown</string>
     <string name="updates_current">up to date</string>
     <string name="updates_outdated">v%1$s available</string>
-    <string name="updates_daemon_unknown_hint">This computer runs a daemon too old to report its version — update it to see it here.</string>
     <string name="updates_daemon_howto">Run this on the computer to update its daemon:</string>
     <string name="updates_app_android">Download the newest APK</string>
     <string name="updates_app_ios">Open the App Store listing</string>
@@ -365,7 +347,6 @@
     <string name="settings_help_takeover">Take over a terminal session without forking</string>
     <string name="settings_help_approvals">Approve work running on another computer</string>
     <string name="settings_help_open">Open full manual</string>
-    <string name="help_center_body">Learn a real task from short, verified steps. For a question that does not fit a guide, ask the public smart support service.</string>
     <string name="help_ask_support">Ask smart support</string>
     <string name="help_ask_support_sub">Open public chat directly · verified manual · no sign-in. No App session content is attached.</string>
     <string name="help_section_tasks">LEARN BY TASK</string>
@@ -402,9 +383,6 @@
     <string name="help_source">Source: public user manual · verified %1$s</string>
     <string name="help_all_guides">Browse all verified guides</string>
     <string name="help_content_note">Content source: the public Pairlet user manual, verified %1$s. These are static instructions; the app does not track your learning progress.</string>
-    <string name="settings_help_copy_ai">Copy link for AI</string>
-    <string name="settings_help_copied">Manual link copied</string>
-    <string name="settings_help_ai_prompt">Open this public manual and use it to answer my Pairlet question.</string>
 
     <!-- ── notifications ─────────────────────────────────────────── -->
     <string name="notifications_section">NOTIFICATIONS</string>
@@ -430,7 +408,6 @@
     <!-- ── new-session default mode ──────────────────────────────── -->
     <string name="default_mode_section">NEW SESSION DEFAULT</string>
     <string name="default_model_section">DEFAULT MODEL</string>
-    <string name="default_model_hint">Which model new Claude sessions start on — Codex sessions keep their own. A live session switches from ⋯ → Model.</string>
     <string name="default_effort_section">DEFAULT REASONING EFFORT</string>
     <string name="context_window_section">CONTEXT WINDOW · CATCH-ALL</string>
     <string name="context_window_hint">Applies to any model without its own window and none we can read off its id. Auto reads the size from the model id.</string>
@@ -506,7 +483,6 @@
     <string name="dir_picker_remote_title">Choose a folder on the remote computer</string>
     <string name="dir_picker_choose_here">Use this folder</string>
     <string name="dir_picker_remote_only">Remote computer — type the path here</string>
-    <string name="ob_open">Need to install Pairlet on your computer?</string>
     <string name="ob_title">Connect your computer</string>
     <string name="ob_sub">Your phone drives the AI coding agent that runs on your computer.</string>
     <!-- ── first run · connect your computer (issue #278 batch 2) ──── -->
@@ -526,15 +502,7 @@
     <string name="fr_trust_github">View on GitHub</string>
     <string name="fr_trust_e2e">End-to-end encrypted to your own paired computer. The relay only forwards ciphertext and cannot read it.</string>
     <string name="fr_trust_policy">What is sent, where it goes, and who processes it.</string>
-    <string name="ob_step_install">Install</string>
-    <string name="ob_step_run">Run on login</string>
-    <string name="ob_step_bucket">Add the bucket</string>
     <string name="ob_step_pair">Pair</string>
-    <string name="ob_pair_hint">Then tap Pair now below and scan the code shown on your computer.</string>
-    <string name="ob_note_mac_run">One command: installs (signed &amp; notarized) and registers the background service — runs on login, auto-reconnects.</string>
-    <string name="ob_note_win">One command: installs, registers the background service, and opens pairing. Needs the Claude Code CLI installed.</string>
-    <string name="ob_note_linux">Registers a systemd --user service; re-run to upgrade.</string>
-    <string name="ob_pair_now">Pair now</string>
     <string name="ob_guide">Full setup guide</string>
     <string name="model_switch_hint">Switching restarts the session — your history is kept.</string>
     <string name="model_custom_label">Custom</string>
@@ -551,14 +519,9 @@
     <string name="model_gateway_alias_note">Recommended: your gateway maps these aliases onto its own models, so they keep working when the vendor renames or replaces one.</string>
     <string name="af_show_from">Show projects &amp; sessions from</string>
     <string name="af_both">All</string>
-    <string name="af_claude_only">Claude</string>
-    <string name="af_codex_only">Codex</string>
-    <string name="af_opencode_only">OpenCode</string>
-    <string name="af_zcode_only">ZCode</string>
     <string name="opencode_mode_short">Full access</string>
     <string name="opencode_mode_title">Full access (auto-approved)</string>
     <string name="opencode_mode_note">OpenCode runs with auto-approval: every tool call (file edits, shell commands) is approved by the CLI itself. Remote approvals and permission modes don\'t apply to OpenCode sessions.</string>
-    <string name="opencode_mode_start">Start with full access</string>
     <string name="opencode_models_loading">Loading models from opencode…</string>
     <string name="model_models_loading">Loading models from %1$s…</string>
     <string name="model_models_empty">%1$s reported no models.</string>
@@ -571,7 +534,6 @@
     <string name="af_hint">Pick any combination — only the checked agents show their projects and sessions, and “All” means no filter. Each agent stays tagged in its own color.</string>
     <string name="settings_usage">Token usage</string>
     <string name="usage_title">Usage</string>
-    <string name="usage_tokens_today">Tokens today</string>
     <string name="usage_requests">Requests</string>
     <string name="usage_cost">Est. cost</string>
     <string name="usage_cache">Cache hit</string>
@@ -699,7 +661,6 @@
     <string name="file_tip_status_notebook">Notebook edited in this session</string>
 
     <!-- ── paired devices (multi-device) ─────────────────────────── -->
-    <string name="devices_section">PAIRED DEVICES</string>
     <string name="choose_computer">Choose a computer</string>
     <string name="add_device">Add a computer</string>
     <string name="device_active">Active</string>
@@ -741,7 +702,6 @@
     <string name="value_model_default">Default</string>
     <!-- issue #320: only Claude has a real "account default" model; for any other agent an unnamed model is simply unknown, and saying "default" invented a fact. -->
     <string name="value_unknown">unknown</string>
-    <string name="session_actions_open">Session actions</string>
     <string name="quick_actions_title">Quick actions</string>
     <string name="qa_model">Switch model</string>
     <string name="qa_context_gauge">Context usage — open session info</string>
@@ -833,7 +793,6 @@
     <string name="bridges_empty_hint">Create one from the desktop app. Bridges let a Feishu / Slack bot drive this machine — you monitor and revoke them here.</string>
     <string name="bridges_stale">Update the daemon to manage bridges, then reopen.</string>
     <string name="bridge_online">Online</string>
-    <string name="bridge_idle">Idle</string>
     <string name="bridge_offline">Offline</string>
     <string name="bridge_waiting_adapter">waiting for the adapter to connect</string>
     <string name="bridge_runner_start">Start</string>
@@ -884,7 +843,6 @@
     <!-- issue #359: the RECENT group header's own removal verb — forgets the PROJECT, not a session -->
     <string name="recent_forget_project">Remove from recents</string>
     <string name="palette_archived_placeholder">Search archived sessions…</string>
-    <string name="palette_archived_legend">⏎ Open · ⌘⏎ Unarchive · esc Leave archive</string>
 
     <!-- session groups (issue #119) — shared by desktop (P2) and mobile (P3) -->
     <string name="group_new">New group</string>
@@ -1360,8 +1318,6 @@
     <string name="split_pane_focus">Focus</string>
     <string name="split_pane_close">Close column</string>
     <string name="split_open">Open in split</string>
-    <string name="split_full">Split is full</string>
-    <string name="split_opening">Opening…</string>
     <string name="split_session_ended">This session has ended.</string>
     <string name="qa_terminal">Open terminal</string>
     <string name="qa_clear_armed">Clear chat — tap again</string>
@@ -1502,8 +1458,6 @@
     <string name="proj_more">More options</string>
     <string name="proj_help">Help</string>
     <string name="proj_settings">Settings</string>
-    <string name="proj_view_tree">Tree</string>
-    <string name="proj_view_flat">Flat</string>
     <string name="proj_open_any">Open any folder…</string>
     <string name="proj_no_match_title">No projects match “%1$s”</string>
     <string name="proj_no_match_body">The filter searches the names and paths this computer reported. Nothing here matched.</string>
@@ -1596,7 +1550,6 @@
     <string name="chat_start_defaults_note">Mode and model follow your defaults</string>
     <string name="proj_search">Search projects</string>
     <string name="proj_search_cancel">Cancel</string>
-    <string name="proj_view_mode">List style</string>
     <!-- session rewind / fork (issue #282) -->
     <string name="rewind_menu_rewind">Rewind from here</string>
     <string name="rewind_menu_rewind_sub">Retry this message with a different wording</string>
@@ -1631,7 +1584,6 @@
     <string name="git_tab">Git</string>
     <string name="git_files_tab">Files</string>
     <string name="git_refresh">Refresh status</string>
-    <string name="git_switch_branch">Switch branch</string>
     <string name="git_in_sync">in sync</string>
     <string name="git_sec_conflicts">Conflicts</string>
     <string name="git_sec_staged">Staged</string>
@@ -1664,7 +1616,6 @@
     <string name="git_push_rejected">Push rejected</string>
     <string name="git_pull_refused">Needs a merge — finish this on the computer</string>
     <string name="git_action_failed">That didn\'t go through</string>
-    <string name="git_dismiss">Dismiss</string>
     <string name="git_conflict_both_modified">Both modified</string>
     <string name="git_conflict_both_added">Both added</string>
     <string name="git_conflict_both_deleted">Both deleted</string>
@@ -1824,8 +1775,6 @@
     <string name="pin_issue_pairing_changed">This computer's pairing changed. Reconnect to it to sync pins.</string>
     <string name="pin_issue_retry">Retry</string>
     <string name="pin_issue_dismiss">Dismiss</string>
-    <string name="tool_process_toggle">Collapse tool steps</string>
-    <string name="tool_process_toggle_hint">Finished tool calls and thinking fold into one line. Steps from a running turn fold after you reopen the session.</string>
     <string name="tool_process_group">Process</string>
     <plurals name="tool_process_tools">
         <item quantity="one">%1$d tool</item>

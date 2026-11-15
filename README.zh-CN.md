@@ -63,7 +63,7 @@ irm https://raw.githubusercontent.com/heypandax/pairlet/main/scripts/install.ps1
 
 - **核心会话**指：发现、回放、新建、恢复、收发文本、实时流式。六个后端全都做得到。
 - **OpenCode 没有可执法的交互审批。** `opencode run` 本身就没有审批协议，所以这类会话恒为 **Full access**——App 会直接说明，而不是摆出一排它根本管不住的模式。
-- **Kimi Code 是 Preview。** DeepSeek 已支持，但很窄：审批与选择题已桥接到 App，但 sandbox 模式在启动时定死（改模式会重启会话）；另外没有改动文件与 diff、没有用量统计、不支持切换模型。
+- **Kimi Code 是 Preview。** DeepSeek 已支持，但很窄：审批与选择题已桥接到 App，但 sandbox 模式在启动时定死（改模式会重启会话）；另外没有改动文件与 diff、没有用量统计。
 - **DeepSeek Harness 自己没有超时。** 放着不管，一条没人回答的审批或提问会让这一回合**一直挂着**——它不会自动拒绝。Pairlet 把这类请求接到 daemon 统一的审批时限上：审批超时按**拒绝**回，提问超时按**跳过**回，让「没人回答」有个结果而不是永远等下去。DeepSeek 也没有「总是允许」——每次都是一次性决定。
 - 能力边界跟随正式 Release。完整说明见[能力页](https://pairlet.org/features.html)与[用户手册](https://pairlet.org/manual/zh/)。
 
@@ -113,7 +113,7 @@ curl -fsSL https://raw.githubusercontent.com/heypandax/pairlet/main/scripts/inst
 pairlet pair
 ```
 
-拉一个自带 JRE 的独立包（不依赖系统 Java），装进 `~/.local`，注册 `systemd --user` 服务。语音转写用 `ffmpeg`，不是 macOS 的 `afconvert`。Linux **桌面 App** 没有正式安装包，只能自己从源码构建。
+拉一个自带 JRE 的独立包（不依赖系统 Java），装进 `~/.local`，注册 `systemd --user` 服务。语音转写用 `ffmpeg`，不是 macOS 的 `afconvert`。Linux **桌面 App** 的独立安装包见[平台与分发](#平台与分发)。
 </details>
 
 <details>

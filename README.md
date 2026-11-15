@@ -63,7 +63,7 @@ Public capability claims for **v1.9.4**, audited against commit [`e9ee816f`](htt
 
 - **Core session** means discover, replay, create, resume, send and receive text, and live streaming. Every backend does all of it.
 - **OpenCode has no enforceable interactive approval.** `opencode run` has no approval protocol, so those sessions run at **Full access** and the app says so up front instead of offering modes it cannot enforce.
-- **Kimi Code is Preview.** DeepSeek is supported, but narrow: approvals and multiple-choice questions are bridged to the app, but the sandbox mode is fixed at launch (changing it relaunches the session), and there is no Changed-files/diff view, no usage accounting and no model switching.
+- **Kimi Code is Preview.** DeepSeek is supported, but narrow: approvals and multiple-choice questions are bridged to the app, but the sandbox mode is fixed at launch (changing it relaunches the session), and there is no Changed-files/diff view or usage accounting.
 - **DeepSeek Harness has no timeout of its own.** Left alone, an unanswered approval or question blocks its turn indefinitely — it does not deny. Pairlet puts the request on the daemon's normal approval window instead: an approval that expires is answered *reject*, and a question that expires is answered *skipped*, so an unanswered request ends the wait rather than hanging it. DeepSeek also has no "always allow" — every request is a one-off decision.
 - Boundaries follow the release. Full detail: [Features](https://pairlet.org/features.html) and the [User manual](https://pairlet.org/manual/en/).
 
@@ -113,7 +113,7 @@ curl -fsSL https://raw.githubusercontent.com/heypandax/pairlet/main/scripts/inst
 pairlet pair
 ```
 
-Pulls a self-contained tarball (bundled JRE, no system Java), installs under `~/.local` and registers a `systemd --user` service. Voice transcription uses `ffmpeg` instead of macOS's `afconvert`. There is no official Linux **desktop app** package — build it from source.
+Pulls a self-contained tarball (bundled JRE, no system Java), installs under `~/.local` and registers a `systemd --user` service. Voice transcription uses `ffmpeg` instead of macOS's `afconvert`. Separate Linux **desktop app** packages are listed under [Platforms & distribution](#platforms--distribution).
 </details>
 
 <details>

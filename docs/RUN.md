@@ -150,7 +150,7 @@ daemon/build/install/cc-pocket-daemon/bin/pairlet pair
 ```
 
 真机：用数据线连上、开 USB 调试，`adb devices` 能看到后同样 `installDebug`，配对方式相同。同一网络下已配对的设备会自动尝试 E2E 直连，执行 `pairlet config --direct-connect lan` 并重启 daemon 后才对局域网开放这个入口。
-运行截图见 `docs/design/android/`。
+可复现的产品截图与生成入口见[素材说明](../marketing/site/README.md)。
 
 ---
 

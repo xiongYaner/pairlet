@@ -19,7 +19,7 @@ pairlet update     # 等价于 cc-pocket-daemon update
 | Scoop | 现有 `cc-pocket-daemon.json` 的 bin 同时声明旧 exe 和 `pairlet` alias | bucket 发布后由 Scoop 更新 shim；不创建第二个应用目录或计划任务 |
 | Gradle installDist | 同目录 `pairlet` / `pairlet.bat` 转发原启动脚本 | 重新构建 installDist；原 daemon 更新脚本会复制整个 bin 目录 |
 
-Homebrew 安装命令仍为 `brew install --cask heypandax/tap/cc-pocket`，Scoop 仍为 `scoop install cc-pocket-daemon`。包名迁移与 CLI 简化分开发布；`packaging/pairlet-candidates/homebrew/` 中的 `pairlet` cask 和 rename map 仍是待验收草案。不能发布两套各自安装、注册服务的同类包。
+Homebrew 安装命令仍为 `brew install --cask heypandax/tap/cc-pocket`，Scoop 仍为 `scoop install cc-pocket-daemon`。包名迁移与 CLI 简化分开发布；旧版 `pairlet` cask、rename map 和 Formula 草稿已移除，来源与验证边界见[历史分发候选](archive/distribution-candidates-2026-09.md)。未来迁移需基于当前版本重新生成并验收，不能发布两套各自安装、注册服务的同类包。
 
 脚本及 daemon 启动补齐仅创建缺失别名；已有同名文件或其他软链接保留并提示使用旧命令。Homebrew / Scoop 安装目录仅由包管理器维护，daemon 不在那里补写入口。新增 alias 不是额外后台进程，不触发服务安装或重启。
 

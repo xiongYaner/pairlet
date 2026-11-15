@@ -10,5 +10,6 @@
 | [Dia CDP 启动需求](dia-cdp-launch-需求.md) | 历史需求背景 |
 | [飞书桥接需求](feishu-bridge-需求.md) | 原桥接方案背景 |
 | [协作接力使用说明](COLLABORATION-HANDOFF.md) | 会话交接与协作联系人的使用说明；该功能已于 2026-10-05 下线（[案例 D3](../DECLINED-REQUIREMENTS.md)） |
+| [2026 年 9 月外部分发候选](distribution-candidates-2026-09.md) | 已移除的旧 Homebrew／Scoop 草稿及其 Git 恢复入口；不用于当前发布 |
 
 不要在这里堆放原始会话、账号配置、供应商响应、设备日志或完整设计导出包；这些材料使用仓库外归档。具体规则与恢复方法见[仓库内容规则](../REPOSITORY-CONTENT.md)。

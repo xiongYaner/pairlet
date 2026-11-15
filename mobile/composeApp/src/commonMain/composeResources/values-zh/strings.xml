@@ -3,8 +3,6 @@
     <!-- ── 连接 / 配对 ───────────────────────────────────────────── -->
     <string name="connect">连接</string>
     <string name="paste_pair_link">粘贴 ccpocket://pair 链接</string>
-    <string name="pairing_title">连接你的电脑</string>
-    <string name="pairing_subtitle">将这台手机与电脑上的 Pairlet 守护进程配对。</string>
     <string name="scanning">扫描中…</string>
     <string name="run_code_prefix">在电脑上运行</string>
     <string name="run_code_suffix">获取配对码。</string>
@@ -25,15 +23,12 @@
     <string name="status_pair_failed">配对失败：%1$s</string>
     <string name="status_connecting">连接中…</string>
     <string name="status_reconnecting">重连中…</string>
-    <string name="status_connected">已连接</string>
     <string name="status_conn_lost">连接断开，重试中…</string>
     <string name="status_failed">失败：%1$s</string>
 
     <!-- ── 连接状态 UX（整页状态 + 空态）─────────────────────────── -->
     <string name="conn_retry">重试</string>
     <string name="conn_repair">重新配对</string>
-    <string name="conn_computer_offline_title">你的电脑已离线</string>
-    <string name="conn_computer_offline_body">Pairlet 找不到你的电脑。请确认电脑已唤醒，且 Pairlet 正在运行。</string>
     <string name="conn_computer_offline_hint">电脑恢复后会自动重新连接。</string>
     <string name="conn_computer_offline_banner">电脑已离线，正在等待恢复…</string>
     <string name="conn_connecting_banner">正在连接电脑…</string>
@@ -122,13 +117,11 @@
     <string name="time_hours_ago">%1$d 小时前</string>
     <string name="time_yesterday">昨天</string>
     <string name="time_days_ago">%1$d 天前</string>
-    <string name="start_agent_in">在 %2$s 启动 %1$s</string>
 
     <!-- ── 对话 ──────────────────────────────────────────────────── -->
     <string name="chat_title">对话</string>
     <string name="stop">停止</string>
     <string name="thinking_streaming">思考中…</string>
-    <string name="chat_running">运行中</string>
     <string name="message_queued_hint">正在运行 — 发送将排队</string>
     <string name="thought_for">思考了 %1$d 秒</string>
     <string name="code_copy">复制</string>
@@ -147,7 +140,6 @@
     <string name="send">发送</string>
     <string name="dictate">语音输入</string>
     <string name="retry_voice_input">重试语音转写</string>
-    <string name="attach_image">添加图片</string>
     <string name="attach_menu">添加附件</string>
     <string name="attach_sheet_photo">照片</string>
     <string name="attach_sheet_file">文件</string>
@@ -195,29 +187,21 @@
     <string name="cancel">取消</string>
     <string name="bypass_cta">⚠ 启用全自动</string>
     <string name="new_session_title">新建会话</string>
-    <string name="note_change_anytime">之后随时可以点击徽章更改。</string>
     <string name="rules_remembered_header">本会话已记住</string>
     <string name="clear_all">全部清除</string>
 
     <!-- ── 权限弹层 ──────────────────────────────────────────────── -->
-    <string name="auto_deny">自动拒绝</string>
-    <string name="ask_waiting_manual">等待你处理</string>
     <string name="auto_denied_title">已自动拒绝</string>
     <string name="auto_denied_body">超时未响应。</string>
     <string name="dismiss">知道了</string>
-    <string name="needs_permission">Claude 请求权限</string>
     <string name="permission_fallback">权限</string>
     <string name="deny">拒绝</string>
     <string name="allow_once">允许一次</string>
     <string name="always_allow">总是允许</string>
-    <string name="always_allow_danger">「总是允许」会让 Claude 在整个会话中%1$s，不推荐。</string>
-    <string name="act_freely">自由行动</string>
-    <string name="always_allow_scope">「总是允许」仅在本会话中记住 %1$s。</string>
     <string name="allow_chip_prefix">本会话内总是允许</string>
     <string name="allow_chip_suffix"></string>
     <!-- 审批系统 M2：任务级授权、换安全方式、自动执行留痕、风险徽标 -->
     <string name="allow_for_task">允许本任务</string>
-    <string name="allow_for_task_note">本任务内同类操作自动执行（最长 2 小时）。</string>
     <string name="retry_safer">换安全方式</string>
     <string name="retry_safer_title">让它换个更安全的做法</string>
     <string name="retry_safer_send">发送约束</string>
@@ -227,7 +211,6 @@
     <string name="rs_stay_workspace">不出项目目录</string>
     <string name="rs_patch_only">只生成 patch 给我看，不直接应用</string>
     <string name="rs_custom_hint">其他约束……</string>
-    <string name="more_options">更多</string>
     <string name="allow_session_option">本会话内总是允许</string>
     <string name="autorun_label">自动执行</string>
     <string name="autorun_basis_task">本任务授权</string>
@@ -334,7 +317,6 @@
     <string name="updates_unknown">未知</string>
     <string name="updates_current">已是最新</string>
     <string name="updates_outdated">可更新到 v%1$s</string>
-    <string name="updates_daemon_unknown_hint">这台电脑上的守护进程版本太旧、报不了自己的版本号——更新后即可在这里看到。</string>
     <string name="updates_daemon_howto">在电脑上运行这行命令来更新守护进程：</string>
     <string name="updates_app_android">下载最新安装包</string>
     <string name="updates_app_ios">打开 App Store 页面</string>
@@ -365,7 +347,6 @@
     <string name="settings_help_takeover">无分叉接管终端会话</string>
     <string name="settings_help_approvals">审批另一台电脑上的操作</string>
     <string name="settings_help_open">打开完整手册</string>
-    <string name="help_center_body">按真实任务学习简短、已核验的步骤。问题不在指南中时，可以直接询问公网智能客服。</string>
     <string name="help_ask_support">询问智能客服</string>
     <string name="help_ask_support_sub">直接打开公开对话 · 已核验手册 · 无需登录；不会附带 App 会话内容。</string>
     <string name="help_section_tasks">按任务学习</string>
@@ -402,9 +383,6 @@
     <string name="help_source">来源：公开用户手册 · %1$s 核验</string>
     <string name="help_all_guides">浏览全部已核验指南</string>
     <string name="help_content_note">内容来源：Pairlet 公开用户手册，核验于 %1$s。这里仅提供静态说明，App 不会记录你的学习进度。</string>
-    <string name="settings_help_copy_ai">复制链接给 AI</string>
-    <string name="settings_help_copied">手册链接已复制</string>
-    <string name="settings_help_ai_prompt">打开这份公开的 Pairlet 用户手册，并依据其中已核验的步骤回答我的问题。</string>
 
     <!-- ── 通知 ──────────────────────────────────────────────────── -->
     <string name="notifications_section">通知</string>
@@ -430,7 +408,6 @@
     <!-- ── 新会话默认模式 ────────────────────────────────────────── -->
     <string name="default_mode_section">新会话默认模式</string>
     <string name="default_model_section">默认模型</string>
-    <string name="default_model_hint">新建 Claude 会话默认使用的模型（Codex 会话不受影响）。会话中可在 ⋯ → 模型 里临时切换。</string>
     <string name="default_effort_section">默认推理强度</string>
     <string name="context_window_section">上下文窗口 · 兜底</string>
     <string name="context_window_hint">适用于既没单独设过窗口、也无法从 id 认出窗口的模型。自动档从模型 id 推断大小。</string>
@@ -506,7 +483,6 @@
     <string name="dir_picker_remote_title">选择远程电脑上的目录</string>
     <string name="dir_picker_choose_here">选择此目录</string>
     <string name="dir_picker_remote_only">远程电脑 — 请在此手动输入路径</string>
-    <string name="ob_open">还没在电脑上安装 Pairlet？</string>
     <string name="ob_title">连接你的电脑</string>
     <string name="ob_sub">手机负责发号施令，干活的 AI 编程助手跑在你自己的电脑上。</string>
     <!-- ── 首启 · 连接你的电脑（issue #278 批次 2） ──── -->
@@ -526,15 +502,7 @@
     <string name="fr_trust_github">去 GitHub 看代码</string>
     <string name="fr_trust_e2e">端到端加密，只发往你自己配对的那台电脑。中继只负责转发密文，读不到内容。</string>
     <string name="fr_trust_policy">发送了什么、去往哪里、由谁处理。</string>
-    <string name="ob_step_install">安装</string>
-    <string name="ob_step_run">开机自启</string>
-    <string name="ob_step_bucket">添加 bucket</string>
     <string name="ob_step_pair">配对</string>
-    <string name="ob_pair_hint">然后点下方「配对」，扫描电脑上显示的码。</string>
-    <string name="ob_note_mac_run">一条命令：安装（已签名公证）并注册后台服务 —— 开机自启、自动重连。</string>
-    <string name="ob_note_win">一条命令：安装、注册后台服务并直接进入配对。需已安装 Claude Code CLI。</string>
-    <string name="ob_note_linux">注册 systemd --user 服务；重跑即升级。</string>
-    <string name="ob_pair_now">去配对</string>
     <string name="ob_guide">完整安装指南</string>
     <string name="model_switch_hint">切换会重启会话——历史会保留。</string>
     <string name="model_custom_label">自定义</string>
@@ -551,14 +519,9 @@
     <string name="model_gateway_alias_note">推荐用这组：网关会把这些别名映射到它自己的模型上，厂商改名换代都不用你跟着改。</string>
     <string name="af_show_from">显示哪些 agent 的项目与会话</string>
     <string name="af_both">全部</string>
-    <string name="af_claude_only">Claude</string>
-    <string name="af_codex_only">Codex</string>
-    <string name="af_opencode_only">OpenCode</string>
-    <string name="af_zcode_only">ZCode</string>
     <string name="opencode_mode_short">完全访问</string>
     <string name="opencode_mode_title">完全访问（自动批准）</string>
     <string name="opencode_mode_note">OpenCode 以自动批准方式运行：所有工具调用（文件编辑、终端命令）由 CLI 自行放行，远程审批与权限模式对 OpenCode 会话不生效。</string>
-    <string name="opencode_mode_start">以完全访问开始</string>
     <string name="opencode_models_loading">正在从 opencode 读取模型…</string>
     <string name="model_models_loading">正在从 %1$s 读取模型…</string>
     <string name="model_models_empty">%1$s 没有报可用模型。</string>
@@ -571,7 +534,6 @@
     <string name="af_hint">可以多选：勾几个就只显示哪几个 agent 的项目与会话，「全部」＝不筛选。各 agent 在列表里仍以各自颜色标注。</string>
     <string name="settings_usage">Token 用量</string>
     <string name="usage_title">用量</string>
-    <string name="usage_tokens_today">今日 tokens</string>
     <string name="usage_requests">请求</string>
     <string name="usage_cost">预估花费</string>
     <string name="usage_cache">缓存命中</string>
@@ -699,7 +661,6 @@
     <string name="file_tip_status_notebook">本会话中修改了 Notebook</string>
 
     <!-- ── 已配对设备（多设备）───────────────────────────────────── -->
-    <string name="devices_section">已配对设备</string>
     <string name="choose_computer">选择电脑</string>
     <string name="add_device">添加电脑</string>
     <string name="device_active">当前</string>
@@ -741,7 +702,6 @@
     <string name="value_model_default">账号默认</string>
     <!-- issue #320：只有 Claude 才有真正的「账号默认模型」；其他 agent 报不出模型就是未知，写「默认」等于编造事实。 -->
     <string name="value_unknown">未知</string>
-    <string name="session_actions_open">会话操作</string>
     <string name="quick_actions_title">快捷操作</string>
     <string name="qa_model">切换模型</string>
     <string name="qa_context_gauge">上下文占用——打开会话信息</string>
@@ -833,7 +793,6 @@
     <string name="bridges_empty_hint">在桌面端创建。桥接让飞书 / Slack 机器人驱动这台电脑——你在这里监控和撤销它们。</string>
     <string name="bridges_stale">升级 daemon 后可管理桥接，然后重新打开。</string>
     <string name="bridge_online">在线</string>
-    <string name="bridge_idle">空闲</string>
     <string name="bridge_offline">离线</string>
     <string name="bridge_waiting_adapter">等待适配器连接</string>
     <string name="bridge_runner_start">启动</string>
@@ -881,7 +840,6 @@
     <!-- issue #359: the RECENT group header's own removal verb — forgets the PROJECT, not a session -->
     <string name="recent_forget_project">从最近移除</string>
     <string name="palette_archived_placeholder">搜索已归档会话……</string>
-    <string name="palette_archived_legend">⏎ 打开 · ⌘⏎ 取消归档 · esc 退出归档</string>
 
     <!-- session groups (issue #119) — shared by desktop (P2) and mobile (P3) -->
     <string name="group_new">新建分组</string>
@@ -1357,8 +1315,6 @@
     <string name="split_pane_focus">聚焦</string>
     <string name="split_pane_close">关闭此栏</string>
     <string name="split_open">在分屏中打开</string>
-    <string name="split_full">分屏已满</string>
-    <string name="split_opening">正在打开…</string>
     <string name="split_session_ended">这个会话已经结束。</string>
     <string name="qa_terminal">打开终端</string>
     <string name="qa_clear_armed">清空会话——再点一次确认</string>
@@ -1497,8 +1453,6 @@
     <string name="proj_more">更多选项</string>
     <string name="proj_help">帮助</string>
     <string name="proj_settings">设置</string>
-    <string name="proj_view_tree">树形</string>
-    <string name="proj_view_flat">平铺</string>
     <string name="proj_open_any">打开任意文件夹…</string>
     <string name="proj_no_match_title">没有项目匹配“%1$s”</string>
     <string name="proj_no_match_body">筛选只匹配这台电脑报上来的名称和路径，这里没有匹配到。</string>
@@ -1591,7 +1545,6 @@
     <string name="chat_start_defaults_note">模式与模型沿用默认</string>
     <string name="proj_search">搜索项目</string>
     <string name="proj_search_cancel">取消</string>
-    <string name="proj_view_mode">列表形态</string>
     <!-- session rewind / fork (issue #282) -->
     <string name="rewind_menu_rewind">从这里重来</string>
     <string name="rewind_menu_rewind_sub">换个说法，重发这条消息</string>
@@ -1626,7 +1579,6 @@
     <string name="git_tab">Git</string>
     <string name="git_files_tab">文件</string>
     <string name="git_refresh">刷新状态</string>
-    <string name="git_switch_branch">切换分支</string>
     <string name="git_in_sync">已同步</string>
     <string name="git_sec_conflicts">冲突</string>
     <string name="git_sec_staged">已暂存</string>
@@ -1659,7 +1611,6 @@
     <string name="git_push_rejected">推送被拒绝</string>
     <string name="git_pull_refused">需要合并——回电脑上处理</string>
     <string name="git_action_failed">这一步没成功</string>
-    <string name="git_dismiss">关闭</string>
     <string name="git_conflict_both_modified">双方都改过</string>
     <string name="git_conflict_both_added">双方都新增</string>
     <string name="git_conflict_both_deleted">双方都删除</string>
@@ -1818,8 +1769,6 @@
     <string name="pin_issue_pairing_changed">这台电脑的配对已变更。重新连接后才能同步置顶。</string>
     <string name="pin_issue_retry">重试</string>
     <string name="pin_issue_dismiss">关闭</string>
-    <string name="tool_process_toggle">收起工具过程</string>
-    <string name="tool_process_toggle_hint">已完成的工具调用和思考会收成一行；运行中新产生的工具，要重新打开会话后才会收起。</string>
     <string name="tool_process_group">执行过程</string>
     <plurals name="tool_process_tools">
         <item quantity="other">%1$d 项工具</item>

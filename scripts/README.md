@@ -16,7 +16,7 @@ jpackage 不能跨平台编译，所以每个平台的产物都在对应 OS 上�
 | `release-harmony.sh` | HarmonyOS 签名 HAP + AGC `.app`（CI 路径需 self-hosted DevEco runner） | macOS + DevEco Studio |
 | `ios-fir.sh` | **iOS IPA** 签名并发布到 fir.im 做真机测试分发（`development` 开发版 / `release-testing` ad-hoc）。token 放 `scripts/.fir-token`（已 gitignore）；设备需先登记 UDID。详见脚本头注释 | macOS |
 
-> 桌面 App 的 Windows MSI / 便携 zip 目前只走 CI（`build-windows.yml` 的 `windows-app` job + `release.yml` 的 `windows-desktop` job）；Linux 桌面包（.deb/AppImage）尚未配置（`build.gradle` targetFormats 只有 Dmg、Msi）。
+> 桌面 App 的 Windows MSI / 便携 zip 目前只走 CI（`build-windows.yml` 的 `windows-app` job + `release.yml` 的 `windows-desktop` job）；Linux 桌面 .deb／.rpm 由 `release.yml` 构建，AppImage 在构建成功时附带发布。
 
 ## 常用命令
 

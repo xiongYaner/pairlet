@@ -2131,25 +2131,6 @@ class PocketRepository(
         scope.launch { doPair(if (fromScan) "qr" else "code") { Pairing.resolveCode(code.trim(), it) } }
     }
 
-    /**
-     * pair_failed cause as a CLASS, never the exception text: a redeem failure's message carries the relay's
-     * raw response body, which has no business leaving the device. Same shape as onTransportDown's conn_failed.
-     *
-     * Both halves now come from ONE place — [classifyPairFailure] decides the class, [wireReason] names it —
-     * so the screen's actionable card and the funnel's category can never describe the same failure
-     * differently. The strings are unchanged by construction; `PairFailureTest` pins that.
-     */
-    private fun reportPairDiagnostic(error: Throwable) {
-        when (classifyPairFailure(error)) {
-            PairFailure.PARSE, PairFailure.CODE, PairFailure.REDEEM ->
-                Diagnostics.report(ErrorPath.PAIRING, DiagnosticStage.REQUEST, ErrorCode.REJECTED)
-            PairFailure.NETWORK -> Diagnostics.report(ErrorPath.PAIRING, DiagnosticStage.CONNECT,
-                ErrorCode.UNAVAILABLE, error, isError = false)
-            PairFailure.OTHER -> Diagnostics.report(ErrorPath.PAIRING, DiagnosticStage.REQUEST,
-                ErrorCode.UNEXPECTED, error)
-        }
-    }
-
     private fun pairFailReason(t: Throwable): String = classifyPairFailure(t).wireReason(t)
 
     /**

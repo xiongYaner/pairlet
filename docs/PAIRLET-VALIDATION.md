@@ -24,7 +24,7 @@
 
 本机完整日志、渠道快照、旧 MSI、候选文件 SHA-256 与恢复记录在被忽略的
 `docs/plans/pairlet-implementation/`，入口为 `PROGRESS.md`、`candidate-artifacts.json`。
-外部草案的可版本化副本在 `packaging/pairlet-candidates/`。
+外部草案已在后续整理中移除，原始提交和验证边界见[历史分发候选](archive/distribution-candidates-2026-09.md)。
 
 ## 仍须单独验收
 

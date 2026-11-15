@@ -33,7 +33,7 @@
 4. 官网、下载入口、支持问答和 TLS 已部署验证；中国大陆网络、新旧 relay 地址组合及旧二维码/六位码验证通过后才考虑新默认地址。
 5. 所有旧命名资产齐全，SHA256SUMS 覆盖每一个实际下载文件。镜像清单在全量文件验证后原子切换，不在试用期间更新稳定 latest.json。
 6. App Store 在原记录管理 `name.txt=CC Pairlet`，过渡期名称见 [命名决定](PAIRLET-NAMING.md)；不创建新 App。2.0.0 元数据草稿已同步，待人工确认，未上传或挂接构建、未提交审核。iPhone/iPad 双语素材同时检查，发布按实际审核状态标记。
-7. 按 `packaging/pairlet-candidates/` 审阅 Homebrew/Scoop 草案；Pages 跳转由 `scripts/build-legacy-pages-redirects.py` 生成。仓库改名独立验收；旧命令始终转发原服务，不发布两套并行安装。发布前不执行外部迁移。
+7. Homebrew/Scoop 的旧候选已移入[历史分发说明](archive/distribution-candidates-2026-09.md)，后续迁移应基于当前版本重新生成；Pages 跳转由 `scripts/build-legacy-pages-redirects.py` 生成。仓库改名独立验收；旧命令始终转发原服务，不发布两套并行安装。
 
 ## 观测模块合入复查（2026-09-11）
 
@@ -57,7 +57,7 @@ main 已合入观测模块及发行配置跟进（PR #369、#370）；`2f2dba8b`
 | `pairlet://` 链接 | App 各入口已同时接受两种 scheme，iOS / Android 已注册；daemon 仍输出 `ccpocket://` | 接受新 scheme 的 App 版本铺开后，daemon 改为输出 `pairlet://`；旧链接永久可解析 |
 | 官网仓库链接 | 已改为 `heypandax/pairlet`，2026-10-04 已部署（见[网站部署记录](PAIRLET-WEBSITE-DEPLOYMENT.md)） | macOS 下载链接已随 2.3.0 切到 `pairlet-desktop-*`（2026-10-04） |
 | relay 域名 | `relay.pairlet.org` 已指向同一个 relay，客户端默认值未切 | 中国大陆网络与新旧地址组合验证通过后再切默认；已配对设备保存的地址不改写 |
-| Homebrew 包名 | 草稿在 `packaging/pairlet-candidates/` | 发版时填入真实版本与哈希，用 tap 的 rename map 把 `cc-pocket` 改为 `pairlet`，并实测旧安装升级与卸载 |
+| Homebrew 包名 | 旧草稿已移除，来源见[历史分发候选](archive/distribution-candidates-2026-09.md) | 若继续迁移，从当前版本生成 rename map，并实测旧安装升级与卸载 |
 
 **macOS 桌面端：新旧两个包并行发布**
 

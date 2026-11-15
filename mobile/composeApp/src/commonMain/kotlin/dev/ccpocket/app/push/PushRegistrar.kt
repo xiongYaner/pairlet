@@ -309,38 +309,6 @@ class PushRegistrar(
     /** Ask for a re-evaluation. Cheap and safe to call from anywhere; the work is serialized. */
     fun trigger(reason: TriggerReason) { triggers.trySend(reason) }
 
-    /**
-     * Submit ONE clearing registration for [key] and then forget it entirely — the severed-link path
-     * (a daemon unpaired). Best effort by design: the credential is about
-     * to be discarded, so this is the last moment the relay row can ever be cleared, but a failure here
-     * must not block the removal the user asked for.
-     */
-    suspend fun clearAndForget(key: PairingKey) {
-        val link = links[key]
-        generations[key] = (generations[key] ?: 0) + 1 // fence any round still believing in the old expectation
-        rounds.remove(key)?.cancel()
-        if (link != null) {
-            val tag = platform.token.value?.platform ?: lastPlatformTag() ?: UNKNOWN_PLATFORM
-            Diagnostics.push(DiagnosticStage.PUSH_CLEAR, ErrorCode.STARTED, 1)
-            val rid = newRequestId()
-            val result = runCatching { gate.withPermit { link.submit(RegisterPush(tag, "", rid), config.ackTimeoutMs) } }
-            val code = when (val outcome = result.getOrNull()) {
-                is SubmitOutcome.Acked -> if (outcome.result.requestId == rid && outcome.result.result == PushRegistrationOutcome.CLEARED)
-                    ErrorCode.CLEARED else ErrorCode.ACK_MISMATCH
-                is SubmitOutcome.Failed -> when (outcome.reason) {
-                    FailReason.ACK_TIMEOUT -> ErrorCode.ACK_TIMEOUT
-                    FailReason.AUTH_REJECTED -> ErrorCode.REJECTED
-                    FailReason.NO_ROUTE -> ErrorCode.NO_ROUTE
-                    FailReason.SEND_FAILED -> ErrorCode.SEND_FAILED
-                }
-                SubmitOutcome.SentLegacy -> ErrorCode.FALLBACK_USED
-                null -> if (result.exceptionOrNull() is CancellationException) ErrorCode.SUPERSEDED else ErrorCode.SEND_FAILED
-            }
-            Diagnostics.push(DiagnosticStage.PUSH_CLEAR, code, 1)
-        }
-        detach(key, forget = true)
-    }
-
     /** Test seam: the current per-pairing record. */
     internal fun stateOf(key: PairingKey): PairingState? = states[key]
 

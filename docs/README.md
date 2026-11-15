@@ -11,7 +11,7 @@
 | 实施本轮八项 Issue 修复（不含 #352／#381／#342） | [2026-09-19 批次规划与逐项方案](iterations/2026-09-19-claude-code/README.md) |
 | 2.1.2 全平台发布与验收 | [2026-09-22 发布记录](iterations/2026-09-22-release/RELEASE-2.1.2.md) |
 | 2.6.0 发布与验收 | [2026-10-18 发布记录](iterations/2026-10-18-release/RELEASE-2.6.0.md) |
-| 2.6.1 合并发布、中国区恢复与域名过渡 | [2026-10-27 核查与实施方案](iterations/2026-10-27-release-plan/PLAN.md)、[2.6.1 发版准备清单](iterations/2026-10-27-release-plan/RELEASE-2.6.1.md)（尚未正式发布或切换） |
+| 2.6.1 合并发布、中国区恢复与域名过渡 | [2026-10-27 核查与实施方案](iterations/2026-10-27-release-plan/PLAN.md)、[2.6.1 发布与验收记录](iterations/2026-10-27-release-plan/RELEASE-2.6.1.md)（各渠道状态及验证边界见记录） |
 | 2.5.0 发布与验收 | [2026-10-06 发布记录](iterations/2026-10-06-release/RELEASE-2.5.0.md) |
 | 2.4.0 全平台发布与验收 | [2026-10-06 发布记录](iterations/2026-10-06-release/RELEASE-2.4.0.md) |
 | 2.3.0 全平台发布与验收 | [2026-10-05 发布记录](iterations/2026-10-05-release/RELEASE-2.3.0.md) |
