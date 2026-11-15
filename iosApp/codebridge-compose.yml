@@ -1,0 +1,75 @@
+name: CodeBridgeCompose
+options:
+  deploymentTarget:
+    iOS: "15.0"
+packages:
+  Firebase:
+    url: https://github.com/firebase/firebase-ios-sdk.git
+    from: "11.0.0"
+  Sentry:
+    url: https://github.com/getsentry/sentry-cocoa
+    exactVersion: "8.58.2"
+targets:
+  CodeBridge:
+    type: application
+    platform: iOS
+    sources:
+      - path: iosApp
+        excludes:
+          - Info.plist
+          - GoogleService-Info.plist
+          - GoogleService-Info.plist.template
+          - en.lproj/InfoPlist.strings
+          - zh-Hans.lproj/InfoPlist.strings
+      - path: CodeBridgeCompose
+    dependencies:
+      - package: Firebase
+        product: FirebaseAnalytics
+      - package: Firebase
+        product: FirebaseCrashlytics
+      - package: Sentry
+        product: Sentry
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.gejiarong.codebridge
+        PRODUCT_NAME: CodeBridge
+        DEVELOPMENT_TEAM: 7U83DS2M3Q
+        CODE_SIGN_STYLE: Automatic
+        CODE_SIGN_ENTITLEMENTS: CodeBridgeCompose/CodeBridgeCompose.entitlements
+        INFOPLIST_FILE: CodeBridgeCompose/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        MARKETING_VERSION: "2.6.1"
+        CURRENT_PROJECT_VERSION: "2026111502"
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        FRAMEWORK_SEARCH_PATHS:
+          - $(inherited)
+          - $(SRCROOT)/../mobile/composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
+        OTHER_LDFLAGS: [$(inherited), -framework, ComposeApp]
+      configs:
+        Debug:
+          CODEBRIDGE_APNS_ENVIRONMENT: development
+        Release:
+          CODEBRIDGE_APNS_ENVIRONMENT: production
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: Apple Distribution
+          PROVISIONING_PROFILE_SPECIFIER: CodeBridge App Store 2026-11-05
+    preBuildScripts:
+      - name: Compile Shared Main Runtime
+        basedOnDependencyAnalysis: false
+        script: |
+          set -eu
+          export JAVA_HOME="${JAVA_HOME:-$(/usr/libexec/java_home -v 17)}"
+          cd "$SRCROOT/.."
+          ./gradlew :mobile:composeApp:embedAndSignAppleFrameworkForXcode
+schemes:
+  CodeBridge:
+    build:
+      targets:
+        CodeBridge: all
+    run:
+      config: Debug
+    archive:
+      config: Release

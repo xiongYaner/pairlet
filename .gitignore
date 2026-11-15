@@ -59,6 +59,7 @@ docs/design/APP-DESIGN-AUTOPILOT.md
 # Xcode per-user state
 **/xcuserdata/
 *.xcuserstate
+/iosApp/CodeBridgeCompose.xcodeproj/
 
 # stray render/tool artifacts from the design phase
 .playwright-mcp/

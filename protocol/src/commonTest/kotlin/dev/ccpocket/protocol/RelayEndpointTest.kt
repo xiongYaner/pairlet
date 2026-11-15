@@ -4,10 +4,17 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class RelayEndpointTest {
-    @Test fun officialStoredEndpointsDialTheNewPrimary() {
+    @Test fun forkDefaultUsesPersonalRelay() {
+        assertEquals("wss://relay.xiaowanai.cn", RelayEndpoint.DEFAULT)
+        for (suffix in listOf("", "/", ":443", ":443/")) {
+            assertEquals(RelayEndpoint.DEFAULT, RelayEndpoint.transport("wss://relay.xiaowanai.cn$suffix"))
+        }
+    }
+
+    @Test fun officialStoredEndpointsKeepTheirUpstreamOperator() {
         for (host in listOf("pocket.ark-nexus.cc", "relay.pairlet.org", "relay.pairlet.cn")) {
             for (suffix in listOf("", "/", ":443", ":443/")) {
-                assertEquals(RelayEndpoint.DEFAULT, RelayEndpoint.transport("wss://$host$suffix"))
+                assertEquals("wss://relay.pairlet.cn", RelayEndpoint.transport("wss://$host$suffix"))
             }
         }
     }
