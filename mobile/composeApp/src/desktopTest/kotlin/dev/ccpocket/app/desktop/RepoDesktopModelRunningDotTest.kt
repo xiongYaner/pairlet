@@ -59,31 +59,31 @@ class RepoDesktopModelRunningDotTest {
 
     private fun RepoDesktopModel.group(path: String) = sessionGroups.first { it.path == path }
 
-    /** Always assert per ROW, never "no row in this group is running": the demo listing hands EVERY
-     *  directory the same four session ids, so one id marked live lights up in both groups here. Real
-     *  session ids are unique per session, which is exactly what the daemon's index is keyed by. */
+    /** Always assert per ROW, never "no row in this group is running". Demo sessions are workspace-scoped
+     *  now, so each project gets distinct ids just like the daemon's session index. */
     private fun DkSessionGroup.running(sessionId: String) = sessions.first { it.sessionId == sessionId }.running
 
     @Test
     fun aStaleSnapshotDotGoesOutAndALiveSessionLightsUp() = withTwoGroups { repo, m, a, b ->
+        val bSecondSessionId = DemoData.sessions(b.path)[1].sessionId
         // baseline: A's snapshot froze the live session as running, and nothing in B is
         assertTrue(m.group(a.path).running(DemoData.LIVE_SESSION_ID), "precondition: the frozen dot is on")
-        assertFalse(m.group(b.path).running("demo-s2"))
+        assertFalse(m.group(b.path).running(bSecondSessionId))
 
         // the daemon now answers with a modern list: A holds nothing alive, B has a session mid-turn
         repo.directories.clear()
         repo.directories += DirectoryEntry(path = a.path, name = a.name, isDir = true, hasSessions = true)
         repo.directories += DirectoryEntry(
             path = b.path, name = b.name, isDir = true, hasSessions = true,
-            open = true, executing = true, activeSessionId = "demo-s2",
-            activeSessions = listOf(ActiveSession(sessionId = "demo-s2", executing = true)),
+            open = true, executing = true, activeSessionId = bSecondSessionId,
+            activeSessions = listOf(ActiveSession(sessionId = bSecondSessionId, executing = true)),
         )
 
         // not in activeSessions ⇒ not running, however alive the frozen snapshot still claims it is
         assertFalse(m.group(a.path).running(DemoData.LIVE_SESSION_ID), "a frozen snapshot must not keep a dot alight")
         // in activeSessions and mid-turn ⇒ running, even though this row's listing said live=false
-        assertTrue(m.group(b.path).running("demo-s2"))
-        assertFalse(m.group(b.path).running("demo-s3"))
+        assertTrue(m.group(b.path).running(bSecondSessionId))
+        assertFalse(m.group(b.path).running(DemoData.sessions(b.path)[2].sessionId))
     }
 
     /** Background work with no turn in flight still counts as active — the same `executing || busy` rule

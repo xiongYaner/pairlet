@@ -1,0 +1,113 @@
+name: CodeBridge
+options:
+  deploymentTarget:
+    iOS: "18.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "2611161203"
+    DEVELOPMENT_TEAM: 7U83DS2M3Q
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+targets:
+  CodeBridge:
+    type: application
+    platform: iOS
+    sources:
+      - path: CodeBridge
+    info:
+      path: CodeBridge/Info.plist
+      properties:
+        CFBundleDisplayName: CodeBridge
+        CodeBridgeClient: SwiftUI
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        NSLocalNetworkUsageDescription: 通过端到端加密连接你电脑上的编程助手。
+        NSCameraUsageDescription: 扫描电脑上的配对二维码。
+        NSMicrophoneUsageDescription: 通过语音输入发送消息。
+        NSSpeechRecognitionUsageDescription: 将语音转写为消息文字。
+        NSFaceIDUsageDescription: 保护会话内容和敏感操作审批。
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        CFBundleURLTypes:
+          - CFBundleURLName: com.gejiarong.codebridge
+            CFBundleURLSchemes: [codebridge, pairlet, ccpocket]
+        UILaunchScreen: {}
+        CADisableMinimumFrameDurationOnPhone: true
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.gejiarong.codebridge
+        PRODUCT_NAME: CodeBridge
+        TARGETED_DEVICE_FAMILY: "1,2"
+        CODE_SIGN_ENTITLEMENTS: CodeBridge/CodeBridge.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        FRAMEWORK_SEARCH_PATHS:
+          - $(inherited)
+          - $(SRCROOT)/../mobile/composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
+        OTHER_LDFLAGS: [$(inherited), -framework, ComposeApp]
+      configs:
+        Debug:
+          CODEBRIDGE_APNS_ENVIRONMENT: development
+        Release:
+          CODEBRIDGE_APNS_ENVIRONMENT: production
+          CODE_SIGN_STYLE: Manual
+          CODE_SIGN_IDENTITY: Apple Distribution
+          PROVISIONING_PROFILE_SPECIFIER: CodeBridge App Store 2026-11-05
+    preBuildScripts:
+      - name: Build Shared Pairlet Runtime
+        basedOnDependencyAnalysis: false
+        script: |
+          set -eu
+          export JAVA_HOME="${JAVA_HOME:-$(/usr/libexec/java_home -v 17)}"
+          cd "$SRCROOT/.."
+          ./gradlew :mobile:composeApp:embedAndSignAppleFrameworkForXcode
+  CodeBridgeTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: CodeBridgeTests
+    dependencies:
+      - target: CodeBridge
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.gejiarong.codebridge.tests
+        GENERATE_INFOPLIST_FILE: YES
+        FRAMEWORK_SEARCH_PATHS:
+          - $(inherited)
+          - $(SRCROOT)/../mobile/composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)
+  CodeBridgeUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: CodeBridgeUITests
+    dependencies:
+      - target: CodeBridge
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.gejiarong.codebridge.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: CodeBridge
+schemes:
+  CodeBridge:
+    build:
+      targets:
+        CodeBridge: all
+    run:
+      config: Debug
+    archive:
+      config: Release
+    test:
+      config: Debug
+      targets:
+        - CodeBridgeTests
+        - CodeBridgeUITests
+      environmentVariables:
+        CODEBRIDGE_LIVE_TEST_CONFIG: "$(CODEBRIDGE_LIVE_TEST_CONFIG)"

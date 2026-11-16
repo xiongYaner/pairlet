@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CCPocketSentryDSN</key>
-	<string>$(CCPOCKET_SENTRY_DSN_IOS)</string>
-	<key>CCPocketSentryEnvironment</key>
-	<string>$(CCPOCKET_SENTRY_ENVIRONMENT)</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -18,11 +14,6 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
-	<key>CFBundleLocalizations</key>
-	<array>
-		<string>en</string>
-		<string>zh</string>
-	</array>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
@@ -44,31 +35,27 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CodeBridgeClient</key>
+	<string>SwiftUI</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-		<key>NSAllowsArbitraryLoads</key>
+		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
-	<key>NSBonjourServices</key>
-	<array>
-		<string>_ccpocket._tcp</string>
-	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>CodeBridge uses the camera to scan the pairing QR code shown by pairlet pair on your computer.</string>
+	<string>扫描电脑上的配对二维码。</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>CodeBridge uses Face ID to lock the app, so only you can open your sessions and approve tool actions.</string>
+	<string>保护会话内容和敏感操作审批。</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>CodeBridge connects to the daemon running on your computer over the local network.</string>
+	<string>通过端到端加密连接你电脑上的编程助手。</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>CodeBridge uses the mic to dictate prompts. Audio is transcribed for this message only — nothing is recorded or stored.</string>
+	<string>通过语音输入发送消息。</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>CodeBridge uses Apple speech recognition to transcribe your dictation so you can speak prompts instead of typing them.</string>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
+	<string>将语音转写为消息文字。</string>
+	<key>UILaunchScreen</key>
+	<dict/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

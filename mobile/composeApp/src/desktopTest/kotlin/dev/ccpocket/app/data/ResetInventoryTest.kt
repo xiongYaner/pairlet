@@ -499,6 +499,9 @@ class ResetInventoryTest {
             directoriesLoaded            R R K K K K K K
             refreshing                   K K R K K K K K  # OK-不对称
             sessions                     R R R K K K K R
+            workspaceSessions            R R K K K K K K  # one machine's background session previews leave with disconnect/cold switch
+            workspaceSessionRequests     R R K K K K K K  # likewise their deduplicated in-flight request markers
+            workspaceSessionEpoch        C C K K K K K K  # invalidates callbacks from the link that was just closed
             sessionsDir                  R R R K K K K R
             sessionGroups                R R K K K K K K
             daemonManagedSessions        R R K K K K K K

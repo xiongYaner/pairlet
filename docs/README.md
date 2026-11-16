@@ -5,7 +5,8 @@
 | 任务 | 入口 |
 |---|---|
 | 本 Fork 的 CodeBridge TestFlight 与手机外网连接 | [main 发行与连接说明](CODEBRIDGE-RELEASE.md) |
-| 本 Fork 的 CodeBridge 2.6.1（2026111502）交付 | [TestFlight、云端与连接验收记录](releases/CODEBRIDGE-2.6.1-2026111502.md) |
+| 本 Fork 的 CodeBridge 1.0.0（2611161203） | [观察提示、手动接管与状态更新](releases/CODEBRIDGE-1.0.0-2611161203.md) |
+| 本 Fork 的 CodeBridge 2.6.1（2026111502）误发历史 | [Compose 包与后端验收历史记录](releases/CODEBRIDGE-2.6.1-2026111502.md) |
 | 本 Fork 的个人阿里云 relay 部署 | [Nginx／systemd 部署与回滚](deploy/CODEBRIDGE-RELAY.md) |
 | 2026-10-17 GitHub issue 核查与修复候选 | [全部 16 项分诊、DSH v4 与桌面菜单修复及验证限制](analysis/2026-10-17-github-issues.md) |
 | 了解架构、模块与开发指南 | [工程 Wiki](https://wiki.pairlet.org/) |

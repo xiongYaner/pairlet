@@ -1,6 +1,7 @@
 package dev.ccpocket.app.data
 
 import dev.ccpocket.app.epochMillis
+import dev.ccpocket.protocol.AgentKind
 import dev.ccpocket.protocol.ChatRole
 import dev.ccpocket.protocol.CommandSource
 import dev.ccpocket.protocol.DirectoryEntry
@@ -31,50 +32,58 @@ object DemoData {
             hasSessions = true, recent = true, lastModified = ago(2 * MIN),
             open = true, executing = true,
             activeSessionId = LIVE_SESSION_ID, activeSessionTitle = "Add demo mode for App Review",
-            gitBranch = "main",
+            gitBranch = "main", sessionAgents = listOf(AgentKind.CLAUDE),
         ),
         DirectoryEntry(
             path = "/Users/alex/code/pairlet-site", name = "pairlet-site", isDir = true,
             hasSessions = true, recent = true, lastModified = ago(3 * HOUR), gitBranch = "main",
+            sessionAgents = listOf(AgentKind.CLAUDE),
         ),
         DirectoryEntry(
             path = "/Users/alex/code/relay-server", name = "relay-server", isDir = true,
             hasSessions = true, recent = true, lastModified = ago(28 * HOUR), gitBranch = "deploy",
+            sessionAgents = listOf(AgentKind.CLAUDE),
         ),
         DirectoryEntry(
             path = "/Users/alex/code/notes-cli", name = "notes-cli", isDir = true,
             hasSessions = true, lastModified = ago(3 * DAY), gitBranch = "main",
+            sessionAgents = listOf(AgentKind.CLAUDE),
         ),
         DirectoryEntry(
             path = "/Users/alex/dotfiles", name = "dotfiles", isDir = true,
             hasSessions = true, lastModified = ago(9 * DAY), gitBranch = "main",
+            sessionAgents = listOf(AgentKind.CLAUDE),
         ),
     )
 
     /** Session history for a tapped project. The live project leads with the running session. */
-    fun sessions(workdir: String): List<SessionSummary> = listOf(
-        SessionSummary(
-            sessionId = LIVE_SESSION_ID, title = "Add demo mode for App Review",
-            firstPrompt = "Add a no-pairing demo mode so reviewers can see the app",
-            messageCount = 12, cwd = workdir, lastModified = ago(2 * MIN),
-            gitBranch = "main", live = workdir == LIVE_DIR,
-        ),
-        SessionSummary(
-            sessionId = "demo-s2", title = "Fix reconnect banner flicker",
-            firstPrompt = "The reconnecting banner flickers when opening a session",
-            messageCount = 8, cwd = workdir, lastModified = ago(5 * HOUR), gitBranch = "main",
-        ),
-        SessionSummary(
-            sessionId = "demo-s3", title = "Add push-to-talk voice input",
-            firstPrompt = "Can we add dictation to the composer?",
-            messageCount = 21, cwd = workdir, lastModified = ago(2 * DAY), gitBranch = "feature/voice",
-        ),
-        SessionSummary(
-            sessionId = "demo-s4", title = "Localize all strings to Chinese",
-            firstPrompt = "Add zh localization across every screen",
-            messageCount = 15, cwd = workdir, lastModified = ago(6 * DAY), gitBranch = "main",
-        ),
-    )
+    fun sessions(workdir: String): List<SessionSummary> {
+        val key = workdir.hashCode().toUInt().toString(16)
+        fun sessionId(name: String) = if (workdir == LIVE_DIR) name else "demo-$key-$name"
+        return listOf(
+            SessionSummary(
+                sessionId = sessionId(LIVE_SESSION_ID), title = "Add demo mode for App Review",
+                firstPrompt = "Add a no-pairing demo mode so reviewers can see the app",
+                messageCount = 12, cwd = workdir, lastModified = ago(2 * MIN),
+                gitBranch = "main", live = workdir == LIVE_DIR,
+            ),
+            SessionSummary(
+                sessionId = sessionId("demo-s2"), title = "Fix reconnect banner flicker",
+                firstPrompt = "The reconnecting banner flickers when opening a session",
+                messageCount = 8, cwd = workdir, lastModified = ago(5 * HOUR), gitBranch = "main",
+            ),
+            SessionSummary(
+                sessionId = sessionId("demo-s3"), title = "Add push-to-talk voice input",
+                firstPrompt = "Can we add dictation to the composer?",
+                messageCount = 21, cwd = workdir, lastModified = ago(2 * DAY), gitBranch = "feature/voice",
+            ),
+            SessionSummary(
+                sessionId = sessionId("demo-s4"), title = "Localize all strings to Chinese",
+                firstPrompt = "Add zh localization across every screen",
+                messageCount = 15, cwd = workdir, lastModified = ago(6 * DAY), gitBranch = "main",
+            ),
+        )
+    }
 
     /** A preloaded transcript so an opened session looks real immediately (user / assistant / tool turns). */
     fun history(): List<HistoryMessage> = listOf(

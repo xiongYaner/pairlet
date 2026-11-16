@@ -1144,6 +1144,9 @@ class PocketRepository(
     val directoriesLoaded = mutableStateOf(false)
     val refreshing = mutableStateOf(false)
     val sessions = mutableStateListOf<SessionSummary>()
+    val workspaceSessions = mutableStateMapOf<String, List<SessionSummary>>()
+    private val workspaceSessionRequests = mutableSetOf<String>()
+    private var workspaceSessionEpoch = 0
     val sessionsDir = mutableStateOf<String?>(null)
     /** Custom session groups for [sessionsDir] (issue #119); empty = none / older daemon that omits them.
      *  Per-session membership rides on [SessionSummary.group] (a group id, or null = ungrouped). */
@@ -3099,6 +3102,9 @@ class PocketRepository(
 
     /** Drop the live connection and return to the Connect screen (pairing is kept). */
     fun disconnect() {
+        workspaceSessionEpoch++
+        workspaceSessions.clear()
+        workspaceSessionRequests.clear()
         sidePanes.clear() // #311: nothing behind a pane survives the link
         sessionActive.value = false
         // Close the registrar gate BEFORE cancelling sockets: an unconfined cancellation callback may
@@ -4015,7 +4021,13 @@ class PocketRepository(
                 recomputePhase()
             }
             is Sessions -> {
-                if (acceptsSessions(f.workdir)) {
+                val workspaceOnly = f.workdir in workspaceSessionRequests &&
+                    f.workdir != browseIntentDir && f.workdir != sessionsDir.value
+                if (f.workdir in workspaceSessionRequests) {
+                    workspaceSessions[f.workdir] = f.items.distinctBy { it.sessionId }
+                    workspaceSessionRequests.remove(f.workdir)
+                }
+                if (!workspaceOnly && acceptsSessions(f.workdir)) {
                     // distinctBy: one row per session id NO MATTER what the daemon sent. A codex resume-rollout
                     // (two files, one id) once reached the phone's LazyColumn as two rows with one key — that is
                     // an instant native crash, not a cosmetic glitch. The daemon dedupes too; this edge survives
@@ -4330,7 +4342,9 @@ class PocketRepository(
                 }
                 val workdirChanged = workdir.value != f.workdir
                 convoId.value = f.convoId; workdir.value = f.workdir; observing.value = f.observing; currentSessionId = f.sessionId
-                sessionObservation.value = f.observation?.takeIf { f.observing } // daemon truth; null = plain / older daemon
+                // Same-thread Desktop control (observing=false, readOnly=false) still carries
+                // progress. Keep it so running/completed status and observedState stay current.
+                sessionObservation.value = f.observation // daemon truth; null = plain / older daemon
                 // Codex catalog cache: the open session's directory is the catalog's target; a session announced in
                 // another directory re-targets it (revoking any request for the previous one)
                 if (f.agent == AgentKind.CODEX && (workdirChanged || codexCatalogTarget != f.workdir)) retargetCodexCatalog(f.workdir)
@@ -5129,14 +5143,20 @@ class PocketRepository(
      *
      * @return false when nothing was started at all (blank prompt, or one already queued).
      */
-    fun startTaskWithPrompt(wd: String, prompt: String, agent: AgentKind, onDelivered: () -> Unit = {}): Boolean {
+    fun startTaskWithPrompt(
+        wd: String,
+        prompt: String,
+        agent: AgentKind,
+        model: String? = null,
+        onDelivered: () -> Unit = {},
+    ): Boolean {
         if (prompt.isBlank() || newTaskStarting.value) return false
         newTaskError.value = null
         newTaskDraft.value = prompt // held until a send actually succeeds; only then is it cleared
         val previousConvo = convoId.value
         // A backend this daemon never advertised must be refused BEFORE the sheet closes — openSession
         // would return false anyway, but saying so while the picks are still on screen is the honest order.
-        if (!supportsAgent(agent) || !openSession(wd, agent = agent)) {
+        if (!supportsAgent(agent) || !openSession(wd, agent = agent, startModel = model)) {
             newTaskError.value = NewTaskError.OPEN_REFUSED
             return false
         }
@@ -6132,6 +6152,25 @@ class PocketRepository(
         browseIntentDir = wd
         trackSessionsOpening(wd)
         return scope.launch { send(ListSessions(wd)) }
+    }
+
+    /** Refresh histories already shown by the native client, including a newly created chat's workspace. */
+    fun refreshLoadedWorkspaceSessions(currentWorkdir: String? = null) {
+        val paths = workspaceSessions.keys.toSet() + listOfNotNull(sessionsDir.value, currentWorkdir)
+        paths.filter { it.isNotBlank() }.forEach(::refreshWorkspaceSessions)
+    }
+
+    fun refreshWorkspaceSessions(wd: String) {
+        if (!sessionActive.value || !workspaceSessionRequests.add(wd)) return
+        val epoch = workspaceSessionEpoch
+        scope.launch {
+            if (epoch != workspaceSessionEpoch) return@launch
+            try { send(ListSessions(wd)) }
+            finally {
+                delay(12_000)
+                if (epoch == workspaceSessionEpoch) workspaceSessionRequests.remove(wd)
+            }
+        }
     }
 
     /** A project tap whose session list has not arrived yet. The tap itself navigates nothing — the route

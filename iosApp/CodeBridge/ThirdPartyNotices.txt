@@ -1,0 +1,38 @@
+MIT License
+
+Copyright (c) 2026 cc-pocket authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+# Icon Sources and Attribution
+
+These SVG files are used only to identify supported Agent or model options in the local prototype. Product names and logos remain trademarks of their owners. Their use does not imply partnership, sponsorship, or endorsement.
+
+## Brand marks
+
+- `anthropic.svg`, `deepseek.svg`, `kimi.svg`, `opencode.svg`, and `zai.svg`: downloaded from [Simple Icons](https://simpleicons.org/) via its CDN. Simple Icons source icons are provided under CC0; that dedication does not grant trademark rights.
+  - `https://cdn.simpleicons.org/anthropic`
+  - `https://cdn.simpleicons.org/deepseek`
+  - `https://cdn.simpleicons.org/kimi`
+  - `https://cdn.simpleicons.org/opencode`
+  - `https://cdn.simpleicons.org/zdotai`
+- `openai.svg`: downloaded from the [Wikimedia Commons file page for the OpenAI 2025 symbol](https://commons.wikimedia.org/wiki/File:OpenAI_logo_2025_(symbol).svg). Check that file page for the current source and license details.
+- `zai.svg` is the closest available Z.ai brand mark and is used as a prototype placeholder for the `ZCode` option. Replace it with an official ZCode asset if one becomes available.
+
+All marks are stored locally. The prototype makes no runtime CDN requests.

@@ -3,6 +3,8 @@ package dev.ccpocket.daemon.session
 import dev.ccpocket.observability.*
 
 import dev.ccpocket.daemon.agent.AgentBackendFactory
+import dev.ccpocket.daemon.codex.CodexDesktopBridge
+import dev.ccpocket.daemon.codex.IpcCodexDesktopBridge
 import dev.ccpocket.daemon.conversation.AskPushHook
 import dev.ccpocket.daemon.conversation.Conversation
 import dev.ccpocket.daemon.conversation.DEVICE_SINK_KEY_PREFIX
@@ -91,6 +93,9 @@ class SessionRegistry(
     // M3 deterministic risk radar (advisory) — daemon-wide so the sequence ledger survives relaunches
     private val riskEngine: dev.ccpocket.daemon.approval.ApprovalRiskEngine? =
         dev.ccpocket.daemon.approval.ApprovalRiskEngine(),
+    // Installed Codex app's local IPC. Used only when an explicit take-over targets a thread that the
+    // Desktop still owns: prompts go to that same thread instead of minting a protective fork.
+    private val codexDesktop: CodexDesktopBridge = IpcCodexDesktopBridge(),
 ) {
     private val mutex = Mutex()
     private val log = dev.ccpocket.daemon.util.logger("SessionRegistry")
@@ -633,7 +638,7 @@ class SessionRegistry(
                     val convoId = UUID.randomUUID().toString()
                     log.info("open ${resume.take(8)}… → OBSERVE ${convoId.take(8)}… (live foreign writer)")
                     val obs = ObserveSession(
-                        convoId, open.workdir, resume, file!!, sink, scope,
+                        convoId, open.workdir, resume, file, sink, scope,
                         agent = effectiveAgent, sinceSeq = open.lastEventSeq,
                         observationCapable = peerSupportsObservation,
                         policy = observationPolicy?.let { p -> { p(effectiveAgent, open.workdir, resume) } },
@@ -641,6 +646,52 @@ class SessionRegistry(
                     mutex.withLock { observes[convoId] = obs }
                     obs.start()
                     return convoId
+                }
+            }
+            if (open.takeOver && effectiveAgent == AgentKind.CODEX) {
+                val file = transcriptResolver(effectiveAgent, open.workdir, resume)
+                val recent = file != null && externallyActive(resume, open.workdir, file, effectiveAgent)
+                if (recent) {
+                    if (origin != null) {
+                        sink.emit(PocketError("bridge_busy", "a Desktop-owned Codex session is not available to a bridge", convoId = null))
+                        return ""
+                    }
+                    val owner = runCatching { codexDesktop.owner(resume) }.getOrElse { error ->
+                        log.warn("open ${resume.take(8)}… → Desktop IPC unavailable during take-over: ${error.message}")
+                        sink.emit(PocketError(
+                            "desktop_control_unavailable",
+                            "the Codex session is running on this computer, but its Desktop control channel is unavailable; close it there and try again",
+                            convoId = null,
+                        ))
+                        return ""
+                    }
+                    if (owner == null || !owner.supportsUntrustedAppInput) {
+                        sink.emit(PocketError(
+                            "desktop_control_unavailable",
+                            "the Codex session is owned by another client that does not accept phone input; the original thread was left unchanged",
+                            convoId = null,
+                        ))
+                        return ""
+                    }
+                    val stale = mutex.withLock {
+                        val dead = observes.filterValues { it.sessionId == resume && it.isAttachedTo(sink) }
+                        dead.keys.forEach(observes::remove)
+                        dead.values.toList()
+                    }
+                    stale.forEach { it.close() }
+                    val desktopConvoId = UUID.randomUUID().toString()
+                    log.info("open ${resume.take(8)}… → SAME-THREAD CONTROL ${desktopConvoId.take(8)}… via Codex Desktop")
+                    val controlled = ObserveSession(
+                        desktopConvoId, open.workdir, resume, file, sink, scope,
+                        agent = effectiveAgent, sinceSeq = open.lastEventSeq,
+                        binding = null,
+                        policy = observationPolicy?.let { p -> { p(effectiveAgent, open.workdir, resume) } },
+                        observationCapable = peerSupportsObservation,
+                        desktopBridge = codexDesktop,
+                    )
+                    mutex.withLock { observes[desktopConvoId] = controlled }
+                    controlled.start()
+                    return desktopConvoId
                 }
             }
         }
@@ -1205,8 +1256,13 @@ class SessionRegistry(
      *  the router answers [dev.ccpocket.protocol.SessionGone] so the phone can re-open + resend instead of
      *  the prompt vanishing into silence (the root of "sent a message, nothing happened"). */
     suspend fun sendPrompt(p: SendPrompt): Boolean {
-        val convo = get(p.convoId) ?: return false
-        convo.sendPrompt(p.text, p.images, p.promptId, p.diagnostic)
+        get(p.convoId)?.let { convo ->
+            convo.sendPrompt(p.text, p.images, p.promptId, p.diagnostic)
+            return true
+        }
+        val controlled = mutex.withLock { observes[p.convoId] } ?: return false
+        if (!controlled.sameThreadControl) return false
+        controlled.sendPrompt(p.text, p.images, p.promptId)
         return true
     }
 
@@ -1263,7 +1319,11 @@ class SessionRegistry(
     suspend fun switchServiceTier(s: SwitchServiceTier) = get(s.convoId)?.switchServiceTier(s.serviceTier) ?: Unit
     /** Authoritative mutation result for the App's tighten/clear acknowledgement. */
     suspend fun clearRule(c: ClearAllowRule): Boolean = get(c.convoId)?.clearAllowRule(c.rule) ?: false
-    suspend fun cancelTurn(c: CancelTurn) = get(c.convoId)?.cancelTurn() ?: Unit
+    suspend fun cancelTurn(c: CancelTurn) {
+        get(c.convoId)?.let { it.cancelTurn(); return }
+        val controlled = mutex.withLock { observes[c.convoId] }
+        if (controlled?.sameThreadControl == true) controlled.interruptTurn()
+    }
     suspend fun stopBackgroundJob(s: StopBackgroundJob) = get(s.convoId)?.stopBackgroundJob(s.jobId) ?: Unit
 
     /** A workflow agent's detail sheet opened — the conversation reads the full prompt/return off disk (#106). */

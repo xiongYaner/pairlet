@@ -7,9 +7,10 @@
 ## 本 Fork 的个人发行入口
 
 - 本仓库 `xiongYaner/pairlet` 在 `main` 开发，个人 relay 为 `wss://relay.xiaowanai.cn`。上段和后文的 `relay.pairlet.cn`／香港迁移信息属于上游运维背景，不能据此部署到上游服务器。
-- 个人 iOS 使用 `iosApp/codebridge-compose.yml`、`scripts/release-codebridge-ios.sh`，身份 `com.gejiarong.codebridge` / Team `7U83DS2M3Q`。不能误用上游 `iosApp/project.yml` 或默认 `ios-release.yml` 上传个人版本。详见 [CodeBridge 发行与连接](docs/CODEBRIDGE-RELEASE.md)。
+- 个人 iOS 必须使用既有的原生 SwiftUI 多 Agent 客户端：`iosApp/codebridge.yml`、`iosApp/CodeBridge/`、`scripts/release-codebridge-ios.sh`，身份 `com.gejiarong.codebridge` / Team `7U83DS2M3Q`。归档后必须核对 `CodeBridgeClient=SwiftUI`。不能误用上游 Compose 宿主或默认 `ios-release.yml` 上传个人版本。详见 [CodeBridge 发行与连接](docs/CODEBRIDGE-RELEASE.md)。
+- 个人 iOS 营销版本固定为 `1.0.0`，build 按北京时间 `YYMMDDHHmm` 生成（本次候选 `2611151349`）。上传后回读 ASC 确认版本/build、处理与测试组资格；已有更高营销版 `2.6.1` 时，不能声称低营销版会自动更新，须按 TestFlight 的 Other Builds／其他构建入口及实际可安装状态交付。
 - 个人云端使用 Nginx，部署入口为 `scripts/deploy-codebridge-relay.sh`；保留既有数据库、凭据和其他业务服务。不能直接运行固定上游 Caddy 配置的 `scripts/redeploy-relay.sh`。详见[个人 relay 运维](docs/deploy/CODEBRIDGE-RELAY.md)。
-- 两份尚未提交的 SwiftUI 工作区 `codex/app-foundation`、`codex/swiftui-delivery` 按用户决定保持原样，不混入 main Compose 发行。
+- 两份 SwiftUI 原工作区 `codex/app-foundation`、`codex/swiftui-delivery` 保持原样；已确认的完整成果来自 `swiftui-delivery`，经备份后复制整合到 main。不得把“切到 main 开发”理解为换回上游 Compose 客户端；2026-11-15 的 2.6.1（2026111502）因此发错了客户端，后续必须校验工程入口和原生多 Agent UI。
 
 ## 沟通语言
 

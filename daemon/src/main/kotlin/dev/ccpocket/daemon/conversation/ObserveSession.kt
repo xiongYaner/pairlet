@@ -5,12 +5,17 @@ import dev.ccpocket.daemon.diagnostics.completeInitialHistory
 import dev.ccpocket.daemon.codex.CodexPaths
 import dev.ccpocket.daemon.codex.CodexTranscriptReplay
 import dev.ccpocket.daemon.codex.CodexTranscriptScanner
+import dev.ccpocket.daemon.codex.CodexDesktopBridge
 import dev.ccpocket.daemon.disk.TranscriptReplay
 import dev.ccpocket.daemon.disk.TranscriptScanner
 import dev.ccpocket.protocol.AgentKind
 import dev.ccpocket.protocol.ConvoHistory
+import dev.ccpocket.protocol.ImageData
 import dev.ccpocket.protocol.ObservationBinding
 import dev.ccpocket.protocol.ObservedProgress
+import dev.ccpocket.protocol.ObservedStates
+import dev.ccpocket.protocol.PocketError
+import dev.ccpocket.protocol.PromptAck
 import dev.ccpocket.protocol.SessionLive
 import dev.ccpocket.protocol.SessionObservation
 import dev.ccpocket.protocol.contextWindowFor
@@ -22,6 +27,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.nio.file.Path
+import java.util.UUID
 import kotlin.io.path.exists
 import kotlin.io.path.fileSize
 import kotlin.io.path.getLastModifiedTime
@@ -61,6 +67,13 @@ class ObserveSession(
     private val policy: (() -> dev.ccpocket.daemon.disk.ObservationLookup)? = null,
     /** The peer declared [dev.ccpocket.protocol.ClientCaps.supportsSessionObservationV1]: announce the snapshot. */
     private val observationCapable: Boolean = false,
+    /**
+     * Non-null turns this transcript-tail view into a same-thread Codex controller.
+     * The installed Desktop stays the writer: prompts, steering and interrupts are
+     * forwarded through its local IPC while this class tails the same rollout for
+     * history and completion. No daemon-owned Codex process is launched.
+     */
+    private val desktopBridge: CodexDesktopBridge? = null,
     /** The session's CURRENT native file, re-resolved every tick; null = keep [file]. Defaults to the Codex
      *  logical-id lookup for Codex (a resume writes a new rollout), nothing for other backends. */
     private val fileResolver: (() -> Path?)? = if (agent == AgentKind.CODEX) ({ CodexPaths.findSession(sessionId) }) else null,
@@ -88,6 +101,18 @@ class ObserveSession(
     /** The last progress announced — a changed freshness (CURRENT → STALE at 60 s) re-announces without a file write. */
     private var lastProgress: ObservedProgress? = null
 
+    /** Turn id accepted by the Desktop owner; kept until the rollout proves that turn finished. */
+    @Volatile
+    private var remoteTurnId: String? = null
+
+    @Volatile
+    private var remoteTurnAcceptedAt: Long = 0
+
+    /** Prompt retries re-ack instead of running the same message twice. */
+    private val seenPromptIds = object : LinkedHashMap<String, Unit>(16, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, Unit>) = size > 100
+    }
+
     /** The binding as last read (starts from the constructor's); confined to the tail coroutine. */
     @Volatile
     private var currentBinding: ObservationBinding? = binding
@@ -98,6 +123,9 @@ class ObserveSession(
 
     /** Read-only right now: the caller's policy, or the binding as last read, or an unreadable store. */
     val readOnlyNow: Boolean get() = readOnly || currentBinding?.readOnly == true || policyUnreadable
+
+    /** True when this view is forwarding prompts to the Desktop owner on the original thread. */
+    val sameThreadControl: Boolean get() = desktopBridge != null && !readOnlyNow
 
     private var policyTick = 0
 
@@ -118,8 +146,13 @@ class ObserveSession(
             runCatching {
                 // Establish the read-only conversation before any metadata/transcript parse.
                 sink.emit(SessionLive(
-                    convoId, workdir, sessionId, observing = true, agent = agent,
-                    notice = if (readOnlyNow) READ_ONLY_NOTICE else null,
+                    convoId, workdir, sessionId, observing = !sameThreadControl, agent = agent,
+                    executing = if (desktopBridge != null) false else null,
+                    notice = when {
+                        readOnlyNow -> READ_ONLY_NOTICE
+                        sameThreadControl -> SAME_THREAD_NOTICE
+                        else -> null
+                    },
                     observation = if (observationCapable && readOnlyNow) SessionObservation(binding = currentBinding, readOnly = true) else null,
                 ))
                 var initialReplay = true
@@ -169,11 +202,12 @@ class ObserveSession(
                         }
                         if (sinceSeq != null) sentCursor = slice.lastSeq ?: sentCursor
                         emitLive(current) // backfill metadata after the first history window is visible
-                    } else if (observationCapable) {
+                    } else if (observationCapable || desktopBridge != null) {
                         // no new bytes: the evidence is unchanged, but its AGE is not — re-announce only when the
                         // snapshot itself differs (freshness bucket moved), never on every tick. observedAt is the
                         // read clock and moves every tick by definition, so it is left out of the comparison.
                         val progress = progressOf(current)
+                        reconcileRemoteTurn(progress)
                         if (progress?.copy(observedAt = 0) != lastProgress?.copy(observedAt = 0)) emitLive(current)
                     }
                     delay(tickMs)
@@ -186,6 +220,68 @@ class ObserveSession(
     suspend fun fetchHistoryPage(beforeSeq: Long, limit: Int, to: OutboundSink) {
         val slice = reader.page(activeFile, beforeSeq, limit.coerceIn(1, 200))
         to.emit(dev.ccpocket.protocol.ConvoHistoryPage(convoId, slice.messages, firstSeq = slice.firstSeq, hasMore = slice.hasMore))
+    }
+
+    /**
+     * Send one prompt to the Desktop-owned thread.
+     *
+     * The existing bubble is acknowledged only after the owner accepts the
+     * follower request. A running turn uses follower steering; otherwise it
+     * starts a turn on the exact same thread id.
+     */
+    suspend fun sendPrompt(text: String, images: List<ImageData>, promptId: String?) {
+        val bridge = desktopBridge
+        if (bridge == null || readOnlyNow) {
+            sink.emit(PocketError(
+                "desktop_control_unavailable",
+                "this session can no longer be controlled; reopen it from its owner",
+                convoId,
+                promptId = promptId,
+            ))
+            return
+        }
+        if (promptId != null && synchronized(seenPromptIds) { seenPromptIds.put(promptId, Unit) != null }) {
+            sink.emit(PromptAck(convoId, promptId))
+            return
+        }
+        val messageId = promptId ?: UUID.randomUUID().toString()
+        try {
+            val activeTurn = lastProgress
+                ?.takeIf { it.state == ObservedStates.RUNNING && !it.turnId.isNullOrBlank() }
+                ?.turnId
+            if (activeTurn != null) {
+                bridge.steer(sessionId, text, messageId)
+            } else {
+                remoteTurnId = bridge.startTurn(sessionId, text, images, messageId)
+            }
+            remoteTurnAcceptedAt = clock()
+            promptId?.let { sink.emit(PromptAck(convoId, it)) }
+            emitLive(activeFile)
+        } catch (error: Exception) {
+            if (promptId != null) synchronized(seenPromptIds) { seenPromptIds.remove(promptId) }
+            sink.emit(PocketError(
+                "desktop_control_unavailable",
+                "the Codex Desktop no longer accepts input for this session; the original was left unchanged",
+                convoId,
+                promptId = promptId,
+            ))
+        }
+    }
+
+    /** Forward the stop button to the Desktop owner's active turn. */
+    suspend fun interruptTurn() {
+        val bridge = desktopBridge ?: return
+        val turnId = remoteTurnId
+            ?: lastProgress?.takeIf { it.state == ObservedStates.RUNNING }?.turnId
+            ?: return
+        runCatching { bridge.interrupt(sessionId, turnId) }
+            .onFailure {
+                sink.emit(PocketError(
+                    "desktop_control_unavailable",
+                    "the Codex Desktop could not stop this turn",
+                    convoId,
+                ))
+            }
     }
 
     /** The replayed rows at transcript cursor [seq] — same contract as [Conversation.historyRowsAt]. */
@@ -211,20 +307,48 @@ class ObserveSession(
         val title = titleFor(current, runCatching { current.getLastModifiedTime().toMillis() }.getOrDefault(-1L))
         val declaredWindow = state.contextWindow ?: state.model?.let(::contextWindowFor)
         val window = dev.ccpocket.protocol.provenWindow(declaredWindow, state.contextUsed)
-        val progress = if (observationCapable) progressOf(current) else null
+        val progress = if (observationCapable || desktopBridge != null) progressOf(current) else null
+        reconcileRemoteTurn(progress)
         lastProgress = progress
+        val controlling = sameThreadControl
         sink.emit(
             SessionLive(
-                convoId, workdir, sessionId, observing = true,
+                convoId, workdir, sessionId, observing = !controlling,
+                executing = if (desktopBridge != null) remoteExecutionActive(progress) else null,
                 model = state.model, contextWindow = window, contextUsed = state.contextUsed, agent = agent, title = title,
                 // an old peer still learns the policy from the notice (it cannot decode the snapshot)
-                notice = if (readOnlyNow) READ_ONLY_NOTICE else null,
-                observation = if (observationCapable && (readOnlyNow || currentBinding != null || progress != null)) {
+                notice = when {
+                    readOnlyNow -> READ_ONLY_NOTICE
+                    controlling -> SAME_THREAD_NOTICE
+                    else -> null
+                },
+                observation = if (observationCapable && (readOnlyNow || controlling || currentBinding != null || progress != null)) {
                     SessionObservation(binding = currentBinding, readOnly = readOnlyNow, progress = progress)
                 } else null,
             ),
         )
     }
+
+    private fun reconcileRemoteTurn(progress: ObservedProgress?) {
+        val turnId = remoteTurnId ?: return
+        val observedTurn = progress?.takeIf { it.turnId == turnId }
+        if (observedTurn != null && observedTurn.state != ObservedStates.RUNNING) {
+            remoteTurnId = null
+            remoteTurnAcceptedAt = 0
+        } else if (
+            observedTurn == null &&
+            remoteTurnAcceptedAt > 0 &&
+            clock() - remoteTurnAcceptedAt > REMOTE_START_GRACE_MS
+        ) {
+            // A Desktop may accept a turn without returning its id. Once the grace
+            // expires, the transcript remains the authority for the running bit.
+            remoteTurnId = null
+            remoteTurnAcceptedAt = 0
+        }
+    }
+
+    private fun remoteExecutionActive(progress: ObservedProgress?): Boolean =
+        progress?.state == ObservedStates.RUNNING || remoteTurnId != null
 
     /**
      * The observed transcript's title, memoized by the file's mtime (PR #296 review). Deriving it re-reads
@@ -311,8 +435,13 @@ class ObserveSession(
         /** [SessionLive.notice] of a read-only view: what an OLD peer (no snapshot) sees instead of "Continue here". */
         const val READ_ONLY_NOTICE = "read-only: this session is driven elsewhere and only observed here"
 
+        /** [SessionLive.notice] of a Desktop-owned session now receiving prompts on the same thread. */
+        const val SAME_THREAD_NOTICE = "connected to the same Codex Desktop thread; no branch was created"
+
         /** Ticks between binding re-reads (≈ 7.5 s at the default tick): a bind made from the sheet shows up in
          *  well under a refresh, without a store read on every tail tick. */
         const val POLICY_RECHECK_TICKS = 5
+
+        private const val REMOTE_START_GRACE_MS = 30_000L
     }
 }

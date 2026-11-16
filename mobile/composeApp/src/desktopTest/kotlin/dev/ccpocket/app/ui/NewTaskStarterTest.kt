@@ -5,6 +5,7 @@ import dev.ccpocket.app.data.DemoData
 import dev.ccpocket.app.data.PocketRepository
 import dev.ccpocket.app.pairing.PairedDaemon
 import dev.ccpocket.protocol.AgentKind
+import dev.ccpocket.protocol.CODEX_MODEL_IDS
 import dev.ccpocket.protocol.DirectoryEntry
 import dev.ccpocket.protocol.Frame
 import dev.ccpocket.protocol.OpenSession
@@ -102,6 +103,21 @@ class NewTaskStarterTest {
         repo.startTaskWithPrompt(DemoData.LIVE_DIR, "port the picker", AgentKind.CODEX)
 
         assertEquals(AgentKind.CODEX, sent.filterIsInstance<OpenSession>().single().agent)
+    }
+
+    @Test
+    fun aNewSessionModelPickReachesTheFirstOpen() = withRepo(demo = true) { repo, sent ->
+        repo.daemonSupportedAgents.value = dev.ccpocket.protocol.DAEMON_SUPPORTED_AGENT_WIRES.toSet()
+        val picked = CODEX_MODEL_IDS.first()
+
+        repo.startTaskWithPrompt(
+            DemoData.LIVE_DIR,
+            "port the picker",
+            AgentKind.CODEX,
+            model = picked,
+        )
+
+        assertEquals(picked, sent.filterIsInstance<OpenSession>().single().model)
     }
 
     // ── refused / failed: the text is always still the user's ────────────────────────────────────────
